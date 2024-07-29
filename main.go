@@ -9,9 +9,23 @@ import (
 )
 
 func main() {
-	// banner
-	fmt.Fprintln(os.Stderr, `
-          _______  _______  _        _______  _______  _______  _______         _ 
+
+	// Command line arguments
+	bigFlag := flag.Bool("b", false, "Generate more permutations of passwords (recommended for offline brute)")
+	webFlag := flag.Bool("w", true, "Generate a smaller amount of permutations (recommended for online spray)")
+	silent := flag.Bool("silent", false, "Don't show banner")
+	companyFlag := flag.String("c", "", "Company Names (comma-separated) to be used in permutations")
+	outputFlag := flag.String("o", "", "File to store the passwords. If not specified, it will be printed to stdout")
+	flag.Parse()
+
+	if *companyFlag == "" || (!*bigFlag && !*webFlag) {
+		flag.Usage()
+		os.Exit(1)
+	}
+	if !*silent {
+		// banner
+		fmt.Fprintln(os.Stderr, `
+	_______  _______  _        _______  _______  _______  _______         _ 
 |\     /|(  ____ \(  ___  )| \    /\(  ____ )(  ___  )(  ____ \(  ____ \       / )
 | )   ( || (    \/| (   ) ||  \  / /| (    )|| (   ) || (    \/| (    \/   _  / / 
 | | _ | || (__    | (___) ||  (_/ / | (____)|| (___) || (_____ | (_____   (_)( (  
@@ -20,20 +34,10 @@ func main() {
 | () () || (____/\| )   ( ||  /  \ \| )      | )   ( |/\____) |/\____) |  (_) \ \ 
 (_______)(_______/|/     \||_/    \/|/       |/     \|\_______)\_______)       \_)
 
-                                by: @sunw4r
-                                                                                  
+						  by: @sunw4r
+																			
 `)
 
-	// Command line arguments
-	bigFlag := flag.Bool("b", false, "Generate more permutations of passwords (recommended for offline brute)")
-	webFlag := flag.Bool("w", true, "Generate a smaller amount of permutations (recommended for online spray)")
-	companyFlag := flag.String("c", "", "Company Names (comma-separated) to be used in permutations")
-	outputFlag := flag.String("o", "", "File to store the passwords. If not specified, it will be printed to stdout")
-	flag.Parse()
-
-	if *companyFlag == "" || (!*bigFlag && !*webFlag) {
-		flag.Usage()
-		os.Exit(1)
 	}
 
 	// Split the comma-separated company names
